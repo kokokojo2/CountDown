@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 
-class CountDown(models.Model):
+class Countdown(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)

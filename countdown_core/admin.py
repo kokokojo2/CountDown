@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import CountDown
+from .models import Countdown
 
-admin.site.register(CountDown)
+admin.site.register(Countdown)
