@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 
 class Countdown(models.Model):
@@ -16,4 +17,5 @@ class Countdown(models.Model):
     def __str__(self):
         return f'Countdown {self.name} created by {self.user}' if self.user else f'Anonymous Countdown {self.name}'
 
-    # TODO: Add an absolute url method
+    def url(self):
+        return reverse('countdown_core:detail', args=[self.pk])
