@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse
+from django.views.generic import DetailView
 
+from .models import Countdown
 from .forms import CountdownForm
 
 
@@ -24,3 +26,8 @@ class CountdownCreateView(View):
 
         return render(request, self.template_name, {'form': countdown_form})
 
+
+class CountdownDetailView(DetailView):
+    model = Countdown
+    context_object_name = 'countdown'
+    template_name = 'countdown/countdown_detail.html'
