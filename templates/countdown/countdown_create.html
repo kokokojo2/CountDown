@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New countdown</title>
+</head>
+<body>
+    <h1>Create new countdown.</h1>
+    {% if form.errors %}
+        <h2>Correct the errors, please.</h2>
+    {% endif %}
+    <form method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" value="Create"></p>
+    </form>
+</body>
+</html>
