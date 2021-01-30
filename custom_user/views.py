@@ -1,7 +1,6 @@
-from django.shortcuts import render, resolve_url
+from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse
-from django.contrib.auth import views as auth_views
 
 from .forms import RegistrationForm
 
