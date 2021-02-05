@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% if confirmed %}
+        Registration is successful
+        {% else %}
+        Something went wrong.
+        {% endif %}
+    </title>
+</head>
+<body>
+    {% if confirmed %}
+        <h1>Your email was confirmed, registration is successful.</h1>
+    {% else %}
+        <h1>Sorry, something went wrong.</h1>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete account</title>
+</head>
+<body>
+    <h1>Do you really want to delete your account?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Yes, do it now!">
+    </form>
+</body>
+</html>
