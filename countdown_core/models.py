@@ -17,5 +17,5 @@ class Countdown(models.Model):
     def __str__(self):
         return f'Countdown {self.name} created by {self.user}' if self.user else f'Anonymous Countdown {self.name}'
 
-    def url(self):
+    def get_absolute_url(self):
         return reverse('countdown_core:detail', args=[self.pk])
