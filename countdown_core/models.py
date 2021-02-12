@@ -9,6 +9,7 @@ class Countdown(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     finished = models.DateTimeField()
+    finished_text = models.TextField(blank=True)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
