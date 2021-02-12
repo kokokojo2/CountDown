@@ -6,6 +6,6 @@ class CountdownForm(forms.ModelForm):
 
     class Meta:
         model = Countdown
-        fields = ('name', 'description', 'finished')
+        fields = ('name', 'description', 'finished_text', 'finished')
 
     widgets = {'finished': forms.DateTimeInput(format='%Y-%m-%dT%H:%M')}
