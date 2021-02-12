@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New countdown</title>
+</head>
+<body>
+    {% for countdown in object_list %}
+        <div>
+        <p><a href="{{ countdown.get_absolute_url }}">{{ countdown.name }}</a> | {{ countdown.user }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
