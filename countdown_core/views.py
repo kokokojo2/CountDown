@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 
 from .models import Countdown
 from .forms import CountdownForm
 from .services.countdown_management import create_countdown
+from custom_user.views import LoginRequiredView
 
 
 class CountdownCreateView(View):
@@ -27,3 +28,13 @@ class CountdownDetailView(DetailView):
     model = Countdown
     context_object_name = 'countdown'
     template_name = 'countdown/countdown_detail.html'
+
+
+class DashBoardView(ListView, LoginRequiredView):
+    model = Countdown
+    template_name = 'countdown/dashboard.html'
+
+    def get_queryset(self):
+        queryset = super(DashBoardView, self).get_queryset()
+        return queryset.filter(user=self.request.user)
+
