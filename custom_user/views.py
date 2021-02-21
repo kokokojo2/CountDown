@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponse
 from django.urls import reverse_lazy
@@ -14,6 +14,10 @@ class LoginRequiredView(LoginRequiredMixin, View):
     login_url = reverse_lazy('custom_user:login')
 
 
+class LoginView(auth_views.LoginView):
+    authentication_form = BootstrapAuthForm
+
+
 # TODO: redirect to dashboard if user is already registered
 class SignUpView(View):
     """
@@ -25,9 +29,8 @@ class SignUpView(View):
         registration_form = RegistrationForm(request.POST)
         user = process_signup_form(request, registration_form)
 
-        # TODO: implement redirect to a success url with e-mail confirmation message
         if user:
-            return HttpResponse('The user was successfully created.')
+            return redirect(reverse_lazy('custom_user:message_signup_success'))
 
         return render(request, self.template_name, {'form': registration_form})
 
@@ -44,7 +47,8 @@ class ActivateAccountView(View):
 
     def get(self, request, uidb64, token):
         user = confirm_user_email(uidb64, token)
-        login(request, user)
+        if user is not None:
+            login(request, user)
         # TODO: make a redirect to a dashboard if the email is confirmed, and render a template if smth goes wrong
         return render(request, self.template_name, {'confirmed': True if user else False})
 
@@ -73,6 +77,8 @@ class UserDeletionView(LoginRequiredView):
 
     def post(self, request):
         request.user.delete()
+        return redirect(reverse_lazy('home'))
+
 
 # message pages views
 class SignupSuccessView(View):
