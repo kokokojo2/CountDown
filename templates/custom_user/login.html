@@ -1,15 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Log in</title>
-</head>
-<body>
-    <h1>Fill in the form to log in into your account.</h1>
-    <form method="post">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <input type="submit" value="Log in">
-    </form>
-</body>
-</html>
+{% extends "generic/base.html" %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static "custom_user/form_styles.css" %}">
+{% endblock %}
+{% block main %}
+    <div class="form-wrapper" style="height: 580px;">
+        <div class="border col-xl-3 pt-3">
+        <div class="container py-3">
+            <p class="text-center name">Log in to your account</p>
+            <form method="post" class="px-5">
+                <p class="text-center">I don`t have account! <a href="{% url "custom_user:signup" %}" style="text-decoration: none">Sing up</a>.</p>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-4">
+                    {{ field.errors }}
+                    {{ field.label_tag }} {{ field }}
+                    {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <p class="text-center">Forgot your password? Click <a href="{% url "custom_user:password_reset" %}" style="text-decoration: none">here</a>.</p>
+                <div class="mb-3 mt-3 text-center"><input type="submit" class="btn btn-primary" value="Log in"></div>
+            </form>
+        </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
-        {% if confirmed %}
-        Registration is successful
-        {% else %}
-        Something went wrong.
-        {% endif %}
-    </title>
-</head>
-<body>
+{% extends "generic/base.html" %}
+{% block main %}
+    <div class="container" style="height: 540px; display: flex; align-items: center; justify-content: center">
     {% if confirmed %}
-        <h1>Your email was confirmed, registration is successful.</h1>
+        <div class="text-center">
+            <div class="slogan mb-3 mt-5">Congratulations, your account is ready!</div>
+            <a class="btn btn-primary" href="{% url "custom_user:login" %}">Log in</a>
+        </div>
     {% else %}
-        <h1>Sorry, something went wrong.</h1>
+        <div class="slogan mb-3 mt-5">Ooops, this link is not valid anymore.</div>
     {% endif %}
-</body>
-</html>
+    </div>
+{% endblock %}
