@@ -1,0 +1,22 @@
+.form-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.border{
+    border-radius: 10px;
+}
+
+.name{
+    font-family: "Segoe UI Light", sans-serif;
+    font-size: 25px;
+}
+
+form{
+    font-family: "Segoe UI Light", sans-serif;
+}
+
+.btn{
+    font-family: "Segoe UI Regular", sans-serif;
+}
