@@ -50,5 +50,7 @@ def confirm_user_email(uidb64, token):
     if user is not None and token_generator.check_token(user, token):
         user.is_active = True
         user.save()
+    else:
+        return None
 
     return user
