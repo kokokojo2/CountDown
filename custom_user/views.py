@@ -6,7 +6,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import RegistrationForm
+from .forms import RegistrationForm, BootstrapAuthForm, BootstrapPasswordResetForm, BootstrapPasswordSetForm
 from .services.user_management_services import process_signup_form, confirm_user_email
 
 
@@ -53,11 +53,13 @@ class PasswordResetView(auth_views.PasswordResetView):
     template_name = 'custom_user/password_reset.html'
     email_template_name = 'email/password_reset.html'
     success_url = reverse_lazy('custom_user:password_reset_asked')
+    form_class = BootstrapPasswordResetForm
 
 
 class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     template_name = 'custom_user/password_reset_confirm.html'
     success_url = reverse_lazy('custom_user:password_reset_done')
+    form_class = BootstrapPasswordSetForm
 
 
 class UserDeletionView(LoginRequiredView):
