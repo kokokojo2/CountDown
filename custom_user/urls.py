@@ -1,7 +1,8 @@
 from django.urls import path
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetDoneView, PasswordResetCompleteView
+from django.contrib.auth.views import LogoutView, PasswordResetDoneView, PasswordResetCompleteView
 
-from .views import SignUpView, ActivateAccountView, PasswordResetView, PasswordResetConfirmView, UserDeletionView
+from .views import SignUpView, ActivateAccountView, PasswordResetView, PasswordResetConfirmView, UserDeletionView, \
+    LoginView, SignupSuccessView
 
 app_name = 'custom_user'
 
@@ -9,7 +10,7 @@ app_name = 'custom_user'
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('login/', LoginView.as_view(template_name='custom_user/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(template_name='custom_user/logout.html'), name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('delete-account/', UserDeletionView.as_view(), name='delete_user'),
     path('activate/<uidb64>/<token>', ActivateAccountView.as_view(), name='activate'),
 
@@ -21,5 +22,7 @@ urlpatterns = [
     path('password-reset-completed/',
          PasswordResetCompleteView.as_view(template_name='custom_user/password_reset_completed.html'),
          name='password_reset_done'),
-]
 
+    # message views
+    path('message/signup-success', SignupSuccessView.as_view(), name='message_signup_success'),
+]
