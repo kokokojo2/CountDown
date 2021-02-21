@@ -72,5 +72,8 @@ class UserDeletionView(LoginRequiredView):
     def post(self, request):
         request.user.delete()
 
-        # TODO: redirect to smth or make real template
-        return HttpResponse('Your account was successfully deleted.')
+# message pages views
+class SignupSuccessView(View):
+
+    def get(self, request):
+        return render(request, template_name='custom_user/signup_successful.html')
