@@ -1,18 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>New countdown</title>
-</head>
-<body>
-    <h1>Create new countdown.</h1>
-    {% if form.errors %}
-        <h2>Correct the errors, please.</h2>
-    {% endif %}
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <p><input type="submit" value="Create"></p>
-    </form>
-</body>
-</html>
+{% extends "generic/base.html" %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static "custom_user/form_styles.css" %}">
+{% endblock %}
+{% block main %}
+     <div class="form-wrapper">
+        <div class="border col-xl-3 pt-3">
+            <div class="container py-3">
+                <p class="text-center name">Create new countdown</p>
+                <form method="post" class="px-5">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-4">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                        {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="mb-3 mt-3 text-center"><input type="submit" class="btn btn-primary" value="Create"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
