@@ -6,7 +6,6 @@ from .views import SignUpView, ActivateAccountView, PasswordResetView, PasswordR
 
 app_name = 'custom_user'
 
-# TODO: change a logout template when it`s ready or maybe just redirect to home page
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('login/', LoginView.as_view(template_name='custom_user/login.html'), name='login'),
