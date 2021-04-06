@@ -4,21 +4,36 @@
     <link rel="stylesheet" href="{% static "custom_user/form_styles.css" %}">
 {% endblock %}
 {% block main %}
-     <div class="form-wrapper">
-        <div class="border col-xl-3 pt-3">
+     <div class="form-wrapper pt-5 mt-3">
+        <div class="border pt-3">
             <div class="container py-3">
                 <p class="text-center name">Create new countdown</p>
                 <form method="post" class="px-5">
                     {% csrf_token %}
-                    {% for field in form %}
-                        <div class="mb-4">
-                        {{ field.errors }}
-                        {{ field.label_tag }} {{ field }}
-                        {% if field.help_text %}
-                            <p class="help">{{ field.help_text|safe }}</p>
-                        {% endif %}
+                    {{ form.non_field_errors }}
+                    <div class="mb-4">
+                        {{ form.name.errors }}
+                        <label for="{{ form.name.id_for_label }}">Name:</label>
+                        {{ form.name }}
                     </div>
-                    {% endfor %}
+                    <div class="d-flex flex-row" style="width: 500px;">
+                        <div class="mb-4 pr-3">
+                            {{ form.description.errors }}
+                            <label for="{{ form.description.id_for_label }}">Description:</label>
+                            {{ form.description }}
+                        </div>
+                        <div style="width: 50px"></div>
+                        <div class="mb-4">
+                            {{ form.finished_text.errors }}
+                            <label for="{{ form.finished_text.id_for_label }}">Message when done:</label>
+                            {{ form.finished_text }}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        {{ form.finished.errors }}
+                        <label for="{{ form.finished.id_for_label }}">Date and time:</label>
+                        {{ form.finished }}
+                    </div>
                     <div class="mb-3 mt-3 text-center"><input type="submit" class="btn btn-primary" value="Create"></div>
                 </form>
             </div>
