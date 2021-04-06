@@ -20,3 +20,8 @@ form{
 .btn{
     font-family: "Segoe UI Regular", sans-serif;
 }
+
+textarea::placeholder{
+    text-align: center;
+    padding-top: 15px;
+}
