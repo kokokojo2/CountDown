@@ -1,14 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>New countdown</title>
-</head>
-<body>
-    {% for countdown in object_list %}
-        <div>
-        <p><a href="{{ countdown.get_absolute_url }}">{{ countdown.name }}</a> | {{ countdown.user }}</p>
+{% extends "generic/base.html" %}
+{% block main %}
+    <div class="container py-5 d-flex">
+        <div class="col-3 border round align-items-center">
+            <p class="text-center main-text p-5">You are logged in as {{ request.user.email }}.</p>
+            <div class="flex-column text-center">
+            <a href="{% url "custom_user:logout" %}" class="btn btn-primary">Logout</a>
+            <a href="{% url "custom_user:delete_user" %}" class="btn btn-secondary">Delete your account</a>
+            </div>
         </div>
-    {% endfor %}
-</body>
-</html>
+
+        <div class="container">
+        {% for countdown in object_list %}
+            <div class="border d-flex justify-content-between p-1 px-3 round countdown">
+                <p class="regular-text"><a class="no-decoration main-text" href="{{ countdown.get_absolute_url }}">{# TODO: add a js timer #} 45d:17h:28m:35s {{ countdown.name }}</a></p>
+                <div class="d-flex mr-5 pt-2 col-1 justify-content-around">
+                    <a href="{# TODO: add a url to edit page#}" class="no-decoration pl-1"><i class="fa fa-pencil fa-lg pr-3" aria-hidden="true"></i></a>
+                    <a href="{# TODO: add a url to delete confirmation page#}" class="no-decoration"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
