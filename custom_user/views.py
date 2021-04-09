@@ -16,9 +16,10 @@ class LoginRequiredView(LoginRequiredMixin, View):
 
 class LoginView(auth_views.LoginView):
     authentication_form = BootstrapAuthForm
+    redirect_authenticated_user = True
+    red = reverse_lazy('countdown:dashboard')
 
 
-# TODO: redirect to dashboard if user is already registered
 class SignUpView(View):
     """
     Handles an account creation.
@@ -35,7 +36,12 @@ class SignUpView(View):
         return render(request, self.template_name, {'form': registration_form})
 
     def get(self, request):
-        return render(request, self.template_name, {'form': RegistrationForm()})
+
+        if request.user.is_anonymous:
+            print(request.user)
+            return render(request, self.template_name, {'form': RegistrationForm()})
+
+        return redirect('countdown:dashboard')
 
 
 class ActivateAccountView(View):
@@ -49,7 +55,6 @@ class ActivateAccountView(View):
         user = confirm_user_email(uidb64, token)
         if user is not None:
             login(request, user)
-        # TODO: make a redirect to a dashboard if the email is confirmed, and render a template if smth goes wrong
         return render(request, self.template_name, {'confirmed': True if user else False})
 
 
@@ -77,7 +82,7 @@ class UserDeletionView(LoginRequiredView):
 
     def post(self, request):
         request.user.delete()
-        return redirect(reverse_lazy('home'))
+        return redirect('home')
 
 
 # message pages views
