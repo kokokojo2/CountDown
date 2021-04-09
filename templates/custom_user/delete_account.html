@@ -1,8 +1,5 @@
 {% extends "generic/base.html" %}
 {% load static %}
-{% block head %}
-    <link rel="stylesheet" href="{% static "home/../../home/static/styles.css" %}">
-{% endblock %}
 {% block main %}
     <div class="container" style="height: 540px; display: flex; align-items: center; justify-content: center">
             <div class="content-wrap">
@@ -13,7 +10,7 @@
             <form method="post" class="text-center">
                 {% csrf_token %}
                 <input class="btn btn-primary" type="submit" value="Yes, delete my account">
-                <a class="btn btn-secondary" href="{# TODO: add a link to user management url #}">No, take me back</a>
+                <a class="btn btn-secondary" href="{% url "countdown:dashboard" %}">No, take me back</a>
             </form>
         </div>
     </div>
