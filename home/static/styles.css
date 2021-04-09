@@ -8,3 +8,30 @@
         font-family: "Segoe UI Light", sans-serif;
         font-size: 20px;
 }
+
+.regular-text{
+    font-family: "Segoe UI Regular", sans-serif;
+    font-size: 20px;
+    margin: 10px;
+}
+
+.round{
+    border-radius: 10px;
+}
+
+.no-decoration{
+    text-decoration: none;
+    color: #212529;
+}
+
+.no-decoration:hover{
+    color: #212529;
+}
+
+.countdown{
+    margin-bottom: 12px;
+}
+
+.btn{
+    font-family: "Segoe UI Regular", sans-serif;
+}
