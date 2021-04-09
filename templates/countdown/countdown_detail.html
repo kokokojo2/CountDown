@@ -1,13 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>New countdown</title>
-</head>
-<body>
-    <h1>{{ countdown.name }}</h1>
-    <p>{{ countdown.description }}</p>
-    <p>{{ countdown.finished }}</p>
-    <span style="color:red">{{ countdown.get_absolute_url }}</span>
-</body>
-</html>
+{% extends "generic/base.html" %}
+{% block main %}
+    <div class="container">
+        <div class="row text-center justify-content-center">
+            <div class="d-flex justify-content-around col-8  align-items-center">
+                <div class="col-6">
+                    <p class="slogan" style="font-size: 50px">45d:17h:28m:35s</p>
+                    <div class="container d-flex justify-content-around">
+                        <a href="{# TODO: add some js to copy url to clipboard #}" class="no-decoration"><i class="fa fa-clipboard fa-lg" aria-hidden="true"></i></a>
+                        <a href="{# TODO: add a url to edit page#}" class="no-decoration"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
+                        <a href="{# TODO: add a url to delete confirmation page#}" class="no-decoration"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div class="">
+                    <p class="slogan pb-4">{{ countdown.name }}</p>
+                    <p class="main-text text-muted" style="text-align: justify">{{ countdown.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
