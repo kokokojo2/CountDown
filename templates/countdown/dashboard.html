@@ -1,7 +1,7 @@
 {% extends "generic/base.html" %}
 {% block main %}
     <div class="container py-5 d-flex">
-        <div class="col-3 border round align-items-center">
+        <div class="col-3 border round align-items-center" style="height: 300px">
             <p class="text-center main-text p-5">You are logged in as {{ request.user.email }}.</p>
             <div class="flex-column text-center">
             <a href="{% url "custom_user:logout" %}" class="btn btn-primary">Logout</a>
@@ -19,6 +19,11 @@
                 </div>
             </div>
         {% endfor %}
+        <div class="border d-flex justify-content-center p-1 px-3 round countdown">
+                <div class="d-flex mr-5 p-2 col-1 justify-content-around">
+                    <a href="{% url "countdown:create" %}" class="no-decoration"><i class="fa fa-plus-square fa-2x" aria-hidden="true"></i></a>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
