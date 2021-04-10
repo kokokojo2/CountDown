@@ -1,0 +1,22 @@
+{% extends "generic/base.html" %}
+{% load static %}
+{% block main %}
+    <div class="container">
+            <div class="content-wrap">
+                {% if can_delete%}
+                    <div class="text-center mb-4">
+                        <div class="slogan mb-1 mt-5">Do you really want to delete this countdown?</div>
+                    </div>
+                    <form method="post" class="text-center">
+                        {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" value="Yes">
+                        <a class="btn btn-secondary" href="{% url "countdown:dashboard" %}">No, take me back</a>
+                    </form>
+                {% elif not can_delete %}
+                    <div class="text-center mb-4">
+                        <div class="slogan mb-1 mt-5">Seems like you are not the owner of this countdown, so you can`t delete it.</div>
+                    </div>
+                {% endif %}
+        </div>
+    </div>
+{% endblock %}
