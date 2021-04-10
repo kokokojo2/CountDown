@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CountdownCreateView, CountdownDetailView, DashBoardView, CountdownDeleteView, CountdownEditView, CountdownUpdate
+from .views import CountdownCreateView, CountdownDetailView, DashBoardView, CountdownDeleteView, CountdownUpdate
 
 app_name = 'countdown_core'
 
