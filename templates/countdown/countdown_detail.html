@@ -7,8 +7,10 @@
                     <p class="slogan" style="font-size: 50px">45d:17h:28m:35s</p>
                     <div class="container d-flex justify-content-around">
                         <a href="{# TODO: add some js to copy url to clipboard #}" class="no-decoration"><i class="fa fa-clipboard fa-lg" aria-hidden="true"></i></a>
-                        <a href="{# TODO: add a url to edit page#}" class="no-decoration"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
-                        <a href="{# TODO: add a url to delete confirmation page#}" class="no-decoration"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                        {% if request.user == countdown.user %}
+                            <a href="{% url "countdown:edit" pk=countdown.pk %}" class="no-decoration"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
+                            <a href="{% url "countdown:delete" pk=countdown.pk %}" class="no-decoration"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="">
