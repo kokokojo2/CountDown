@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .models import Countdown
 from .forms import CountdownForm
@@ -57,8 +58,11 @@ class CountdownDeleteView(LoginRequiredView):
         return render(request, 'countdown/countdown_delete.html', {'can_delete': request.user == c.user})
 
 
-class CountdownUpdate(UpdateView, LoginRequiredView):
+class CountdownUpdateView(UpdateView, LoginRequiredView, UserPassesTestMixin):
     model = Countdown
     template_name = 'countdown/countdown_edit.html'
     form_class = CountdownForm
     success_url = reverse_lazy('countdown:dashboard')
+
+    def test_func(self):
+        return Countdown.objects.get(pk=self.kwargs['pk']).user == self.request.user
