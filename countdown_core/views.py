@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .models import Countdown
@@ -42,26 +42,19 @@ class DashBoardView(ListView, LoginRequiredView):
         return queryset.filter(user=self.request.user)
 
 
-class CountdownDeleteView(LoginRequiredView):
-
-    def get(self, request, pk):
-        c = Countdown.objects.get(pk=pk)
-        return render(request, 'countdown/countdown_delete.html', {'can_delete': request.user == c.user})
-
-    def post(self, request, pk):
-        c = Countdown.objects.get(pk=pk)
-
-        if c.user == request.user:
-            c.delete()
-            return redirect('countdown_core:dashboard')
-
-        return render(request, 'countdown/countdown_delete.html', {'can_delete': request.user == c.user})
-
-
 class CountdownUpdateView(UpdateView, LoginRequiredView, UserPassesTestMixin):
     model = Countdown
     template_name = 'countdown/countdown_edit.html'
     form_class = CountdownForm
+    success_url = reverse_lazy('countdown:dashboard')
+
+    def test_func(self):
+        return Countdown.objects.get(pk=self.kwargs['pk']).user == self.request.user
+
+
+class CountdownDeleteView(DeleteView, LoginRequiredView, UserPassesTestMixin):
+    model = Countdown
+    template_name = 'countdown/countdown_delete.html'
     success_url = reverse_lazy('countdown:dashboard')
 
     def test_func(self):
