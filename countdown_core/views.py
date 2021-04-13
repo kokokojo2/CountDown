@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -31,6 +33,13 @@ class CountdownDetailView(DetailView):
     model = Countdown
     context_object_name = 'countdown'
     template_name = 'countdown/countdown_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        timedelta_seconds = int((self.object.finished.replace(tzinfo=None) - datetime.now()).total_seconds())
+        context['finish_time_delta'] = timedelta_seconds if timedelta_seconds > 0 else 0
+
+        return context
 
 
 class DashBoardView(ListView, LoginRequiredView):
