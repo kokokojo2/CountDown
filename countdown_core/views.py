@@ -41,6 +41,11 @@ class CountdownDetailView(DetailView):
 
         return context
 
+class CountdownFinishedServiceView(View):
+
+    def get(self):
+
+
 
 class DashBoardView(ListView, LoginRequiredView):
     model = Countdown
