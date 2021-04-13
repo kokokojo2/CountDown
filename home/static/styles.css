@@ -35,3 +35,16 @@
 .btn{
     font-family: "Segoe UI Regular", sans-serif;
 }
+
+.help-text{
+    font-size: 20px;
+}
+
+.amount{
+    font-size: 50px;
+    width: 85px;
+}
+
+.desc{
+    width: 400px;
+}
