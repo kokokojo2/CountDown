@@ -1,11 +1,12 @@
 from datetime import datetime
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import HttpResponse, HttpResponseForbidden
 
 from .models import Countdown
 from .forms import CountdownForm
@@ -41,10 +42,19 @@ class CountdownDetailView(DetailView):
 
         return context
 
+
 class CountdownFinishedServiceView(View):
+    """
+    This view is used by js function to asynchronously get finished text.
+    """
+    def get(self, request, pk):
+        countdown_obj = get_object_or_404(Countdown, pk=pk)
+        timedelta_seconds = int((countdown_obj.finished.replace(tzinfo=None) - datetime.now()).total_seconds())
 
-    def get(self):
+        if timedelta_seconds <= 0:
+            return HttpResponse(countdown_obj.finished_text)
 
+        return HttpResponseForbidden()
 
 
 class DashBoardView(ListView, LoginRequiredView):

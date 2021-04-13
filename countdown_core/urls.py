@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CountdownCreateView, CountdownDetailView, DashBoardView, CountdownDeleteView, CountdownUpdateView
+from .views import CountdownCreateView, CountdownDetailView, DashBoardView, CountdownDeleteView, CountdownUpdateView, CountdownFinishedServiceView
 
 app_name = 'countdown_core'
 
@@ -10,4 +10,5 @@ urlpatterns = [
     path('dashboard/', DashBoardView.as_view(), name='dashboard'),
     path('<int:pk>/delete', CountdownDeleteView.as_view(), name='delete'),
     path('<int:pk>/edit', CountdownUpdateView.as_view(), name='edit'),
+    path('<int:pk>/finished', CountdownFinishedServiceView.as_view(), name='finished'),
 ]
