@@ -5,11 +5,11 @@ from django.urls import reverse
 
 class Countdown(models.Model):
     name = models.CharField(max_length=256)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, max_length=256)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     finished = models.DateTimeField()
-    finished_text = models.TextField(blank=True)
+    finished_text = models.TextField(blank=True, max_length=256)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
