@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <div class="container d-flex justify-content-around mt-3">
-                        <a href="#" class="no-decoration"><i class="fa fa-clipboard fa-lg" aria-hidden="true"></i></a>
+                        <a href="#" class="no-decoration"><i class="fa fa-clipboard fa-lg" aria-hidden="true" id="copy-url-btn" data-clipboard-text="http://{{ request.get_host }}{% url 'countdown:detail' pk=countdown.pk%}"></i></a>
                         {% if request.user == countdown.user %}
                             <a href="{% url "countdown:edit" pk=countdown.pk %}" class="no-decoration"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
                             <a href="{% url "countdown:delete" pk=countdown.pk %}" class="no-decoration"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
@@ -44,6 +44,17 @@
 {% endblock %}
 {% block scripts %}
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+    <script>
+        var clipboard = new ClipboardJS('#copy-url-btn');
+        clipboard.on('success', function (e){
+            console.log(e)
+            var pic = document.getElementById("copy-url-btn");
+            console.log(pic);
+            pic.className = "fa fa-check fa-lg";
+            setTimeout(() => {  pic.className = "fa fa-clipboard fa-lg"; }, 1000);
+        });
+    </script>
     <script>
         var countDownTimeSeconds = {{ finish_time_delta }};
 
