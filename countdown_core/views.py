@@ -70,7 +70,6 @@ class CountdownUpdateView(UpdateView, LoginRequiredView, UserPassesTestMixin):
     model = Countdown
     template_name = 'countdown/countdown_edit.html'
     form_class = CountdownForm
-    success_url = reverse_lazy('countdown:dashboard')
 
     def test_func(self):
         return Countdown.objects.get(pk=self.kwargs['pk']).user == self.request.user
