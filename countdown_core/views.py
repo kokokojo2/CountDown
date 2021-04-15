@@ -37,8 +37,14 @@ class CountdownDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        timedelta_seconds = int((self.object.finished.replace(tzinfo=None) - datetime.now()).total_seconds())
-        context['finish_time_delta'] = timedelta_seconds if timedelta_seconds > 0 else 0
+        finish_time = self.object.finished.replace(tzinfo=None)
+
+        context['finish_time_year'] = finish_time.year
+        context['finish_time_month'] = finish_time.month - 1
+        context['finish_time_day'] = finish_time.day
+        context['finish_time_hour'] = finish_time.hour
+        context['finish_time_minute'] = finish_time.minute
+        context['finish_time_second'] = finish_time.second
 
         return context
 
