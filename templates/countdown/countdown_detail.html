@@ -1,4 +1,5 @@
 {% extends "generic/base.html" %}
+{% load static %}
 {% block main %}
     <div class="container">
         <div class="row text-center justify-content-center" id="wrapper">
@@ -45,6 +46,7 @@
 {% block scripts %}
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+    <script src="{% static 'countdown.js' %}"></script>
     <script>
         var clipboard = new ClipboardJS('#copy-url-btn');
         clipboard.on('success', function (e){
@@ -56,84 +58,11 @@
         });
     </script>
     <script>
-        var countDownTimeSeconds = {{ finish_time_delta }};
+        const finish_date = new Date({{ finish_time_year }}, {{ finish_time_month }}, {{ finish_time_day }}, {{ finish_time_hour }}, {{ finish_time_minute }}, {{ finish_time_second }});
+        var countDownTimeSeconds = parseInt((finish_date - new Date()) / 1000);
+        var url = "{% url 'countdown:finished' pk=countdown.pk %}"
 
-        updateCountdown()
-        const intervalID = setInterval(updateCountdown, 1000)
-
-
-        function updateCountdown() {
-
-            var days = Math.floor(countDownTimeSeconds / (60 * 60 * 24));
-            var hours = Math.floor((countDownTimeSeconds / (60 * 60)) % 24);
-            var minutes = Math.floor(countDownTimeSeconds / 60 % 60);
-            var seconds = Math.floor((countDownTimeSeconds % 60));
-
-            var hoursStr = (hours > 9) ? hours.toString() : "0" + hours.toString();
-            var minutesStr = (minutes > 9) ? minutes.toString() : "0" + minutes.toString();
-            var secondsStr = (seconds > 9) ? seconds.toString() : "0" + seconds.toString();
-
-            if(days > 999)
-            {
-                document.getElementById("days").setAttribute("style", "width: 100px;")
-            }
-            document.getElementById("days").innerText = days.toString();
-            document.getElementById("hours").innerText = hoursStr;
-            document.getElementById("minutes").innerText = minutesStr;
-            document.getElementById("seconds").innerText = secondsStr;
-
-            if(countDownTimeSeconds > 0)
-            {
-                countDownTimeSeconds--;
-            }
-            else {
-                confetti({
-                        particleCount: 100,
-                        startVelocity: 30,
-                        spread: 360,
-                        origin: {
-                            x: Math.random(),
-                            y: Math.random() - 0.2
-                        }
-                        });
-                confetti({
-                        particleCount: 100,
-                        startVelocity: 30,
-                        spread: 360,
-                        origin: {
-                            x: Math.random(),
-                            y: Math.random() - 0.2
-                        }
-                        });
-                confetti({
-                        particleCount: 100,
-                        startVelocity: 30,
-                        spread: 360,
-                        origin: {
-                            x: Math.random(),
-                            y: Math.random() - 0.2
-                        }
-                        });
-
-                const url="{% url "countdown:finished" pk=countdown.pk %}";
-                const Http = new XMLHttpRequest();
-
-                Http.open("GET", url);
-                Http.send();
-
-                Http.onreadystatechange = (e) => {
-                    if(Http.readyState === 4 && Http.status === 200)
-                    {
-                        clearInterval(intervalID);
-
-                        const finished_text = document.createElement("div");
-                        finished_text.className = "col-7 main-text mt-5";
-                        finished_text.innerHTML = "<p>" + Http.responseText + "</p>";
-
-                        document.getElementById("wrapper").appendChild(finished_text);
-                    }
-                }
-            }
-        }
+        updateCountdown();
+        const intervalID = setInterval(updateCountdown, 1000);
     </script>
 {% endblock %}
