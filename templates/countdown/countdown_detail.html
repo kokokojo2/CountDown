@@ -58,7 +58,7 @@
         });
     </script>
     <script>
-        const finish_date = new Date({{ finish_time_year }}, {{ finish_time_month }}, {{ finish_time_day }}, {{ finish_time_hour }}, {{ finish_time_minute }}, {{ finish_time_second }});
+        const finish_date = new Date({{ countdown.finished.year }}, {{ countdown.finished.month }} - 1, {{ countdown.finished.day }}, {{ countdown.finished.hour }}, {{ countdown.finished.minute }}, {{ countdown.finished.second }});
         var countDownTimeSeconds = parseInt((finish_date - new Date()) / 1000);
         var url = "{% url 'countdown:finished' pk=countdown.pk %}"
 
