@@ -1,4 +1,5 @@
 {% extends "generic/base.html" %}
+{% load static %}
 {% block main %}
     <div class="container py-5 d-flex">
         <div class="col-3 border round align-items-center" style="height: 300px">
@@ -10,20 +11,54 @@
         </div>
 
         <div class="container">
+        <div>
         {% for countdown in object_list %}
-            <div class="border d-flex justify-content-between p-1 px-3 round countdown">
-                <p class="regular-text"><a class="no-decoration main-text" href="{{ countdown.get_absolute_url }}">{# TODO: add a js timer #} 45d:17h:28m:35s {{ countdown.name }}</a></p>
-                <div class="d-flex mr-5 pt-2 col-1 justify-content-around">
-                    <a href="{% url "countdown:edit" pk=countdown.pk %}" class="no-decoration pl-1"><i class="fa fa-pencil fa-lg pr-3" aria-hidden="true"></i></a>
-                    <a href="{% url "countdown:delete" pk=countdown.pk %}" class="no-decoration"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+            <div class="d-flex">
+                <div class="round border countdown p-1 px-3 pt-3 pb-3 text-center d-flex" style="width: 210px;">
+                    <div id="timer-{{ forloop.counter }}-days" class="main-text round border m-1" style="width: 35px"></div>
+                    <div id="timer-{{ forloop.counter }}-hours" class="main-text round border m-1" style="width: 35px"></div>
+                    <span class="pt-1">:</span>
+                    <div id="timer-{{ forloop.counter }}-minutes" class="main-text round border m-1" style="width: 35px"></div>
+                    <span class="pt-1">:</span>
+                    <div id="timer-{{ forloop.counter }}-seconds" class="main-text round border m-1" style="width: 35px"></div>
+                </div>
+                <div style="width: 10px"></div>
+                <div class="border d-flex justify-content-between p-1 px-3 round countdown col-9">
+                    <p class="regular-text" style="padding-top: 7px"><a class="no-decoration main-text" href="{{ countdown.get_absolute_url }}">{{ countdown.name }}</a></p>
+                    <div class="d-flex mr-5 col-2 justify-content-around" style="padding-top: 18px">
+                        <a href="#" class="no-decoration"><i class="fa fa-clipboard fa-lg copy-btn" aria-hidden="true" id="copy-url-btn-{{ forloop.counter }}" data-clipboard-text="http://{{ request.get_host }}{% url 'countdown:detail' pk=countdown.pk%}"></i></a>
+                        <a href="{% url "countdown:edit" pk=countdown.pk %}" class="no-decoration pl-1"><i class="fa fa-pencil fa-lg pr-3" aria-hidden="true"></i></a>
+                        <a href="{% url "countdown:delete" pk=countdown.pk %}" class="no-decoration"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                    </div>
                 </div>
             </div>
         {% endfor %}
-        <div class="border d-flex justify-content-center p-1 px-3 round countdown">
+        <div class="border d-flex justify-content-center p-1 px-3 round countdown col-11 mx-auto">
                 <div class="d-flex mr-5 p-2 col-1 justify-content-around">
                     <a href="{% url "countdown:create" %}" class="no-decoration"><i class="fa fa-plus-square fa-2x" aria-hidden="true"></i></a>
                 </div>
             </div>
         </div>
+        </div>
     </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'countdown.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+    <script>
+        var clipboard = new ClipboardJS('.copy-btn');
+        clipboard.on('success', function (e){
+            e.trigger.className = "fa fa-check fa-lg";
+            setTimeout(() => {  e.trigger.className = "fa fa-clipboard copy-btn fa-lg"; }, 1000);
+        });
+    </script>
+    <script>
+        var countdownArray = [
+            {% for countdown in object_list %}
+                parseInt((new Date({{ countdown.finished.year }}, {{ countdown.finished.month }} - 1, {{ countdown.finished.day }}, {{ countdown.finished.hour }}, {{ countdown.finished.minute }}, {{ countdown.finished.second }}) - new Date()) / 1000),
+            {% endfor %}
+        ]
+        updateCountdownList();
+        setInterval(updateCountdownList, 1000);
+    </script>
 {% endblock %}
