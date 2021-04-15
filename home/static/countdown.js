@@ -1,26 +1,38 @@
-function displayCountdownChanges(detail_view_mode, days, hours, minutes, seconds)
+function displayCountdownChanges(detail_view_mode, days, hours, minutes, seconds, totalSeconds, index)
 {
     var hoursStr = null;
     var minutesStr = null;
     var secondsStr = null;
     var daysStr = null;
 
-    if(seconds >= 0) {
+    if(totalSeconds > 0) {
          hoursStr = (hours > 9) ? hours.toString() : "0" + hours.toString();
          minutesStr = (minutes > 9) ? minutes.toString() : "0" + minutes.toString();
          secondsStr = (seconds > 9) ? seconds.toString() : "0" + seconds.toString();
          daysStr = days.toString();
     }
 
-    else if(detail_view_mode && seconds < 0) {
+    else if(totalSeconds <= 0) {
          hoursStr = "00";
          minutesStr = "00";
          secondsStr = "00";
          daysStr = "0";
     }
 
-    if(!detail_view_mode && seconds < 0){
-        // TODO: implement code for displaying finished in list view
+    if(!detail_view_mode) {
+        if(totalSeconds > 0) {
+            console.log(index)
+            document.getElementById("timer-" + index + "-days").innerText = daysStr;
+            document.getElementById("timer-" + index + "-hours").innerText = hoursStr;
+            document.getElementById("timer-" + index + "-minutes").innerText = minutesStr;
+            document.getElementById("timer-" + index + "-seconds").innerText = secondsStr;
+        }
+        else {
+            document.getElementById("timer-" + index + "-days").innerText = daysStr;
+            document.getElementById("timer-" + index + "-hours").innerText = hoursStr;
+            document.getElementById("timer-" + index + "-minutes").innerText = minutesStr;
+            document.getElementById("timer-" + index + "-seconds").innerText = secondsStr;
+        }
     }
     else {
         document.getElementById("days").innerText = daysStr;
@@ -31,7 +43,25 @@ function displayCountdownChanges(detail_view_mode, days, hours, minutes, seconds
 
 
 }
+function updateCountdownList()
+{
+    for(var [index, countDownTimeSeconds] of countdownArray.entries()) {
 
+        var days = Math.floor(countDownTimeSeconds / (60 * 60 * 24));
+        var hours = Math.floor((countDownTimeSeconds / (60 * 60)) % 24);
+        var minutes = Math.floor(countDownTimeSeconds / 60 % 60);
+        var seconds = Math.floor((countDownTimeSeconds % 60));
+
+        console.log(index)
+        displayCountdownChanges(false, days, hours, minutes, seconds, countDownTimeSeconds, index + 1);
+
+        if(countDownTimeSeconds >= 0) {
+                countDownTimeSeconds--;
+        }
+
+        countdownArray[index] = countDownTimeSeconds;
+    }
+}
 function updateCountdown() {
 
             var days = Math.floor(countDownTimeSeconds / (60 * 60 * 24));
@@ -40,15 +70,13 @@ function updateCountdown() {
             var seconds = Math.floor((countDownTimeSeconds % 60));
 
 
-            if(days > 999)
-            {
+            if(days > 999) {
                 document.getElementById("days").setAttribute("style", "width: 100px;")
             }
 
-            displayCountdownChanges(true, days, hours, minutes, seconds);
+            displayCountdownChanges(true, days, hours, minutes, seconds, countDownTimeSeconds);
 
-            if(countDownTimeSeconds >= 0)
-            {
+            if(countDownTimeSeconds >= 0) {
                 countDownTimeSeconds--;
             }
             else {
