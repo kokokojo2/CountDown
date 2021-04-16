@@ -24,6 +24,13 @@ class BootstrapAuthForm(AuthenticationForm):
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
 
+        try:
+            self.error_messages['invalid_login'] = 'Please enter a correct email and password.'
+        except KeyError:
+            pass
+
+
+
 
 class BootstrapPasswordResetForm(PasswordResetForm):
 
