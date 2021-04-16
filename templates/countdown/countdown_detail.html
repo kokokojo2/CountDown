@@ -37,6 +37,10 @@
                         <p class="main-text text-muted desc" style="text-align: justify">{{ countdown.description }}</p>
                     {% else %}
                         <p class="main-text text-muted desc">{{ countdown.description }}</p>
+                        <p>&#x2764 </p>
+                        <p>&#x1F602</p>
+                        <p>&#x1F44E</p>
+                        <p>&#x1F622</p>
                     {% endif %}
                 </div>
             </div>
@@ -64,5 +68,16 @@
 
         updateCountdown();
         const intervalID = setInterval(updateCountdown, 1000);
+    </script>
+    <script>
+    function reaction(reaction_id){ // call this function from button's onclick
+        const urls = {
+            0: {% url 'countdown:reaction' pk=countdown.pk id=0 %},
+            1: {% url 'countdown:reaction' pk=countdown.pk id=1 %},
+            2: {% url 'countdown:reaction' pk=countdown.pk id=2 %},
+            3: {% url 'countdown:reaction' pk=countdown.pk id=3 %},
+        };
+        // TODO: call send_reaction function
+        }
     </script>
 {% endblock %}
