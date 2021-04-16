@@ -36,20 +36,6 @@ class CountdownDetailView(DetailView):
     template_name = 'countdown/countdown_detail.html'
 
 
-class CountdownFinishedServiceView(View):
-    """
-    This view is used by js function to asynchronously get finished text.
-    """
-    def get(self, request, pk):
-        countdown_obj = get_object_or_404(Countdown, pk=pk)
-        timedelta_seconds = int((countdown_obj.finished.replace(tzinfo=None) - datetime.now()).total_seconds())
-
-        if timedelta_seconds <= 0:
-            return HttpResponse(countdown_obj.finished_text)
-
-        return HttpResponseForbidden()
-
-
 class DashBoardView(ListView, LoginRequiredView):
     model = Countdown
     template_name = 'countdown/dashboard.html'
@@ -75,3 +61,66 @@ class CountdownDeleteView(DeleteView, LoginRequiredView, UserPassesTestMixin):
 
     def test_func(self):
         return Countdown.objects.get(pk=self.kwargs['pk']).user == self.request.user
+
+
+class CountdownFinishedServiceView(View):
+    """
+    This view is used by js function to asynchronously get finished text.
+    """
+    def get(self, request, pk):
+        countdown_obj = get_object_or_404(Countdown, pk=pk)
+        timedelta_seconds = int((countdown_obj.finished.replace(tzinfo=None) - datetime.now()).total_seconds())
+
+        if timedelta_seconds <= 0:
+            return HttpResponse(countdown_obj.finished_text)
+
+        return HttpResponseForbidden()
+
+
+class ReactionServiceView(View):
+
+    reaction_id_dict = {'cry': 0, 'laugh': 1, 'like': 2, 'negative': 3}
+
+    def post(self, request, pk, reaction_id):
+
+        if request.user.is_authenticated:
+
+            if reaction_id == self.reaction_id_dict['cry']:
+                countdown = Countdown.objects.get(pk=pk)
+                user_queryset = countdown.cry_reaction.filter(pk=request.user.pk)
+
+                if len(user_queryset) > 0:
+                    countdown.cry_reaction.remove(request.user)
+
+                else:
+                    countdown.cry_reaction.add(request.user)
+
+            if reaction_id == self.reaction_id_dict['laugh']:
+                countdown = Countdown.objects.get(pk=pk)
+                user_queryset = countdown.laugh_reaction.filter(pk=request.user.pk)
+
+                if len(user_queryset) > 0:
+                    countdown.laugh_reaction.remove(request.user)
+
+                else:
+                    countdown.laugh_reaction.add(request.user)
+
+            if reaction_id == self.reaction_id_dict['like']:
+                countdown = Countdown.objects.get(pk=pk)
+                user_queryset = countdown.like_reaction.filter(pk=request.user.pk)
+
+                if len(user_queryset) > 0:
+                    countdown.like_reaction.remove(request.user)
+
+                else:
+                    countdown.like_reaction.add(request.user)
+
+            if reaction_id == self.reaction_id_dict['negative']:
+                countdown = Countdown.objects.get(pk=pk)
+                user_queryset = countdown.negative_reaction.filter(pk=request.user.pk)
+
+                if len(user_queryset) > 0:
+                    countdown.negative_reaction.remove(request.user)
+
+                else:
+                    countdown.negative_reaction.add(request.user)
