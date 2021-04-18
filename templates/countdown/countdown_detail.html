@@ -37,15 +37,20 @@
                         <p class="main-text text-muted desc" style="text-align: justify">{{ countdown.description }}</p>
                     {% else %}
                         <p class="main-text text-muted desc">{{ countdown.description }}</p>
-                        <p>&#x2764 </p>
-                        <p>&#x1F602</p>
-                        <p>&#x1F44E</p>
-                        <p>&#x1F622</p>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    <div class=" d-flex flex-column justify-content-around reaction-wrapper stick-right">
+        <button class="reaction-btn border round {% if like_enabled %} blue {% endif %}" id="like" onclick="reaction(2);"><p><span id="like-amount">{{ countdown.like_reaction.all|length }}</span>&#x2764</p></button>
+        <button class="reaction-btn border round {% if dislike_enabled %} blue {% endif %}" id="dislike" onclick="reaction(3);"><p><span id="dislike-amount">{{ countdown.negative_reaction.all|length }}</span>&#x1F44E</p></button>
+    </div>
+    <div class=" d-flex flex-column justify-content-around reaction-wrapper stick-left">
+        <button class="reaction-btn border round {% if laugh_enabled %} blue {% endif %}" id="laugh" onclick="reaction(1);"><p><span id="laugh-amount">{{ countdown.laugh_reaction.all|length }}</span>&#x1F602</p></button>
+        <button class="reaction-btn border round {% if cry_enabled %} blue {% endif %}" id="cry" onclick="reaction(0);"><p><span id="cry-amount">{{ countdown.cry_reaction.all|length }}</span>&#x1F622</p></button>
+    </div>
+
 {% endblock %}
 {% block scripts %}
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
@@ -69,15 +74,16 @@
         updateCountdown();
         const intervalID = setInterval(updateCountdown, 1000);
     </script>
+    <script src="{% static 'reaction.js' %}"></script>
     <script>
     function reaction(reaction_id){ // call this function from button's onclick
         const urls = {
-            0: {% url 'countdown:reaction' pk=countdown.pk id=0 %},
-            1: {% url 'countdown:reaction' pk=countdown.pk id=1 %},
-            2: {% url 'countdown:reaction' pk=countdown.pk id=2 %},
-            3: {% url 'countdown:reaction' pk=countdown.pk id=3 %},
+            0: ["{% url 'countdown:reaction' pk=countdown.pk reaction_id=0 %}", "cry"],
+            1: ["{% url 'countdown:reaction' pk=countdown.pk reaction_id=1 %}", "laugh"],
+            2: ["{% url 'countdown:reaction' pk=countdown.pk reaction_id=2 %}", "like"],
+            3: ["{% url 'countdown:reaction' pk=countdown.pk reaction_id=3 %}", "dislike"]
         };
-        // TODO: call send_reaction function
+        post_reaction(urls[reaction_id][0], urls[reaction_id][1]);
         }
     </script>
 {% endblock %}
