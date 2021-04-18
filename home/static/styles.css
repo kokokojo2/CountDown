@@ -48,3 +48,42 @@
 .desc{
     width: 400px;
 }
+
+.reaction-btn{
+    width: 80px;
+    height: 40px;
+    background-color: white;
+    text-align: center;
+    justify-content: center;
+    padding-top: 6px;
+    transition: background-color .15s;
+}
+
+.reaction-btn:hover{
+    background-color: #f8f9fa;
+}
+
+.blue{
+    background-color: #0d6efd;
+    transition: background-color .15s;
+}
+
+.reaction-btn.blue:hover{
+    background-color: #0b5ed7;
+    transition: background-color .15s;
+}
+
+.reaction-wrapper{
+    height: 100px;
+    bottom: 40%;
+}
+
+.stick-right{
+    position: absolute;
+    left: 92%;
+}
+
+.stick-left{
+    position: absolute;
+    right: 92%;
+}
