@@ -11,5 +11,5 @@ urlpatterns = [
     path('<int:pk>/delete', CountdownDeleteView.as_view(), name='delete'),
     path('<int:pk>/edit', CountdownUpdateView.as_view(), name='edit'),
     path('<int:pk>/finished', CountdownFinishedServiceView.as_view(), name='finished'),
-    path('<int:pk>/reaction/<int:id>', ReactionServiceView.as_view(), name='reaction'),
+    path('<int:pk>/reaction/<int:reaction_id>', ReactionServiceView.as_view(), name='reaction'),
 ]
