@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
 
 from .models import Countdown
+from custom_user.models import CustomUser
 from .forms import CountdownForm
 from .services.countdown_management import create_countdown
 from custom_user.views import LoginRequiredView
@@ -34,6 +35,35 @@ class CountdownDetailView(DetailView):
     model = Countdown
     context_object_name = 'countdown'
     template_name = 'countdown/countdown_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        try:
+            self.object.like_reaction.get(pk=self.request.user.pk)
+            context['like_enabled'] = True
+        except CustomUser.DoesNotExist:
+            context['like_enabled'] = False
+
+        try:
+            self.object.negative_reaction.get(pk=self.request.user.pk)
+            context['dislike_enabled'] = True
+        except CustomUser.DoesNotExist:
+            context['dislike_enabled'] = False
+
+        try:
+            self.object.laugh_reaction.get(pk=self.request.user.pk)
+            context['laugh_enabled'] = True
+        except CustomUser.DoesNotExist:
+            context['laugh_enabled'] = False
+
+        try:
+            self.object.cry_reaction.get(pk=self.request.user.pk)
+            context['cry_enabled'] = True
+        except CustomUser.DoesNotExist:
+            context['cry_enabled'] = False
+
+        return context
 
 
 class DashBoardView(ListView, LoginRequiredView):
@@ -81,12 +111,12 @@ class ReactionServiceView(View):
 
     reaction_id_dict = {'cry': 0, 'laugh': 1, 'like': 2, 'negative': 3}
 
-    def post(self, request, pk, reaction_id):
+    def get(self, request, pk, reaction_id):
 
         if request.user.is_authenticated:
+            countdown = get_object_or_404(Countdown, pk=pk)
 
             if reaction_id == self.reaction_id_dict['cry']:
-                countdown = Countdown.objects.get(pk=pk)
                 user_queryset = countdown.cry_reaction.filter(pk=request.user.pk)
 
                 if len(user_queryset) > 0:
@@ -96,7 +126,6 @@ class ReactionServiceView(View):
                     countdown.cry_reaction.add(request.user)
 
             if reaction_id == self.reaction_id_dict['laugh']:
-                countdown = Countdown.objects.get(pk=pk)
                 user_queryset = countdown.laugh_reaction.filter(pk=request.user.pk)
 
                 if len(user_queryset) > 0:
@@ -106,7 +135,6 @@ class ReactionServiceView(View):
                     countdown.laugh_reaction.add(request.user)
 
             if reaction_id == self.reaction_id_dict['like']:
-                countdown = Countdown.objects.get(pk=pk)
                 user_queryset = countdown.like_reaction.filter(pk=request.user.pk)
 
                 if len(user_queryset) > 0:
@@ -116,7 +144,6 @@ class ReactionServiceView(View):
                     countdown.like_reaction.add(request.user)
 
             if reaction_id == self.reaction_id_dict['negative']:
-                countdown = Countdown.objects.get(pk=pk)
                 user_queryset = countdown.negative_reaction.filter(pk=request.user.pk)
 
                 if len(user_queryset) > 0:
