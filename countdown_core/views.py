@@ -151,3 +151,12 @@ class ReactionServiceView(View):
 
                 else:
                     countdown.negative_reaction.add(request.user)
+
+            likes_number = len(countdown.like_reaction.all())
+            negative_number = len(countdown.negative_reaction.all())
+            laugh_number = len(countdown.laugh_reaction.all())
+            cry_number = len(countdown.cry_reaction.all())
+
+            return HttpResponse(f'{{ "laugh": {laugh_number}, "cry": {cry_number}, "like": {likes_number}, "negative": {negative_number} }}')
+        else:
+            return HttpResponseForbidden()
