@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 
+from countdown_core.models import Countdown
 
 class CustomUserManager(BaseUserManager):
 
@@ -33,6 +34,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
+    bookmarked_countdowns = models.ManyToManyField(Countdown, related_name='user_bookmarks')
     USERNAME_FIELD = 'email'
 
     objects = CustomUserManager()
