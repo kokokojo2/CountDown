@@ -63,6 +63,12 @@ class CountdownDetailView(DetailView):
         except CustomUser.DoesNotExist:
             context['cry_enabled'] = False
 
+        try:
+            self.object.user_bookmarks.get(pk=self.request.user.pk)
+            context['bookmarked'] = True
+        except CustomUser.DoesNotExist:
+            context['bookmarked'] = False
+
         return context
 
 
@@ -160,3 +166,20 @@ class ReactionServiceView(View):
             return HttpResponse(f'{{ "laugh": {laugh_number}, "cry": {cry_number}, "like": {likes_number}, "negative": {negative_number} }}')
         else:
             return HttpResponseForbidden()
+
+
+class BookmarksServiceView(View):
+
+    def get(self, request, pk):
+
+        if request.user.is_authenticated:
+            countdown = Countdown.objects.get(pk=pk)
+            qs = request.user.bookmarked_countdowns.filter(pk=pk)
+
+            if len(qs) > 0:
+                request.user.bookmarked_countdowns.remove(countdown)
+                return HttpResponse('removed')
+            else:
+                request.user.bookmarked_countdowns.add(countdown)
+                return HttpResponse('added')
+
