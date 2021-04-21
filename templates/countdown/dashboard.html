@@ -2,14 +2,23 @@
 {% load static %}
 {% block main %}
     <div class="container py-5 d-flex">
-        <div class="col-3 border round align-items-center" style="height: 300px">
+    <div class="col-3" id="sidebar-wrapper">
+        <div class="border round align-items-center" style="height: 300px">
             <p class="text-center main-text p-5">You are logged in as {{ request.user.email }}.</p>
             <div class="flex-column text-center">
             <a href="{% url "custom_user:logout" %}" class="btn btn-primary">Logout</a>
             <a href="{% url "custom_user:delete_user" %}" class="btn btn-secondary">Delete your account</a>
             </div>
         </div>
+            <p class="text-center pt-3 main-text">Bookmarked countdowns</p>
+            {% for bookmark in request.user.bookmarked_countdowns.all %}
+                 <div class="border d-flex justify-content-between p-1 px-3 round countdown" id="unbookmark-btn-{{ bookmark.pk }}">
+                     <p class="regular-text" style="padding-top: 2px"><a class="no-decoration main-text" href="{{ bookmark.get_absolute_url }}">{{ bookmark.name|truncatechars:20 }}</a></p>
+                     <a href="#" class="no-decoration pl-1 py-3" onclick="bookmark('{% url 'countdown:bookmark' pk=bookmark.pk %}', false, 'unbookmark-btn-{{ bookmark.pk }}')"><i class="fa fa-times pr-3" aria-hidden="true"></i></a>
+                 </div>
+            {% endfor %}
 
+    </div>
         <div class="container">
         <div>
         {% for countdown in object_list %}
@@ -44,6 +53,7 @@
 {% endblock %}
 {% block scripts %}
     <script src="{% static 'countdown.js' %}"></script>
+    <script src="{% static 'bookmark.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
     <script>
         var clipboard = new ClipboardJS('.copy-btn');
