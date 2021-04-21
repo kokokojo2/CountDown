@@ -1,4 +1,4 @@
-function bookmark(url) {
+function bookmark(url, detail_mode, id) {
     const Http = new XMLHttpRequest();
 
     Http.open("GET", url);
@@ -7,15 +7,23 @@ function bookmark(url) {
     Http.onreadystatechange = (e) => {
         if(Http.readyState === 4 && Http.status === 200)
         {
-            console.log(Http.responseText);
-            if(Http.responseText == 'added')
+            if(detail_mode)
             {
-                document.getElementById("bookmark-btn").className = "fa fa-star fa-lg";
+                if(Http.responseText == 'added')
+                {
+                    document.getElementById(id).className = "fa fa-star fa-lg";
+                }
+                else if(Http.responseText == 'removed')
+                {
+                    document.getElementById(id).className = "fa fa-star-o fa-lg";
+                }
             }
-            else if(Http.responseText == 'removed')
+            else if(!detail_mode && Http.responseText == 'removed')
             {
-                document.getElementById("bookmark-btn").className = "fa fa-star-o fa-lg";
+                var sideBar = document.getElementById("sidebar-wrapper");
+                sideBar.removeChild(document.getElementById(id))
             }
+
         }
     }
 }
