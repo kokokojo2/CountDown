@@ -30,8 +30,6 @@ class BootstrapAuthForm(AuthenticationForm):
             pass
 
 
-
-
 class BootstrapPasswordResetForm(PasswordResetForm):
 
     def __init__(self, *args, **kwargs):

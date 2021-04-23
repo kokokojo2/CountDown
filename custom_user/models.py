@@ -4,6 +4,7 @@ from django.contrib.auth.models import PermissionsMixin
 
 from countdown_core.models import Countdown
 
+
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, password=None):
