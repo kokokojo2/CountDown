@@ -13,13 +13,22 @@ class Countdown(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
-    like_reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='love_reactions')
-    cry_reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='cry_reactions')
-    negative_reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='negative_reaction')
-    laugh_reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='lough_reaction')
-
     def __str__(self):
         return f'Countdown {self.name} created by {self.user}' if self.user else f'Anonymous Countdown {self.name}'
 
     def get_absolute_url(self):
         return reverse('countdown_core:detail', args=[self.pk])
+
+
+class ReactionSet(models.Model):
+    """
+    Stores the state of reactions of a particular user on a countdown.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    countdown = models.ForeignKey(Countdown, on_delete=models.CASCADE)
+
+    like = models.BooleanField(default=False)
+    dislike = models.BooleanField(default=False)
+    laugh = models.BooleanField(default=False)
+    cry = models.BooleanField(default=False)
+
