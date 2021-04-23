@@ -8,8 +8,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
 
-from .models import Countdown
-from custom_user.models import CustomUser
+from .models import Countdown, ReactionSet
 from .forms import CountdownForm
 from .services.countdown_management import create_countdown
 from custom_user.views import LoginRequiredView
@@ -39,35 +38,24 @@ class CountdownDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        try:
-            self.object.like_reaction.get(pk=self.request.user.pk)
-            context['like_enabled'] = True
-        except CustomUser.DoesNotExist:
-            context['like_enabled'] = False
+        # TODO: move to a service (use it in js view as well)
+        if self.request.user.is_authenticated:
+            try:
+                reaction_set_obj = ReactionSet.objects.get(user=self.request.user, countdown=self.object)
+            except ReactionSet.DoesNotExist:
+                reaction_set_obj = None
 
-        try:
-            self.object.negative_reaction.get(pk=self.request.user.pk)
-            context['dislike_enabled'] = True
-        except CustomUser.DoesNotExist:
-            context['dislike_enabled'] = False
+            context['reaction_set'] = reaction_set_obj
 
-        try:
-            self.object.laugh_reaction.get(pk=self.request.user.pk)
-            context['laugh_enabled'] = True
-        except CustomUser.DoesNotExist:
-            context['laugh_enabled'] = False
+        likes_number = self.object.reactionset_set.filter(like=True).count()
+        dislikes_number = self.object.reactionset_set.filter(dislike=True).count()
+        laugh_number = self.object.reactionset_set.filter(laugh=True).count()
+        cry_number = self.object.reactionset_set.filter(cry=True).count()
 
-        try:
-            self.object.cry_reaction.get(pk=self.request.user.pk)
-            context['cry_enabled'] = True
-        except CustomUser.DoesNotExist:
-            context['cry_enabled'] = False
-
-        try:
-            self.object.user_bookmarks.get(pk=self.request.user.pk)
-            context['bookmarked'] = True
-        except CustomUser.DoesNotExist:
-            context['bookmarked'] = False
+        context['likes_number'] = likes_number
+        context['dislikes_number'] = dislikes_number
+        context['laugh_number'] = laugh_number
+        context['cry_number'] = cry_number
 
         return context
 
@@ -115,55 +103,44 @@ class CountdownFinishedServiceView(View):
 
 class ReactionServiceView(View):
 
-    reaction_id_dict = {'cry': 0, 'laugh': 1, 'like': 2, 'negative': 3}
+    reaction_id_dict = {'cry': 0, 'laugh': 1, 'like': 2, 'dislike': 3}
 
     def get(self, request, pk, reaction_id):
 
         if request.user.is_authenticated:
             countdown = get_object_or_404(Countdown, pk=pk)
+            reaction_set_obj, created = ReactionSet.objects.get_or_create(user=request.user, countdown=countdown)
 
             if reaction_id == self.reaction_id_dict['cry']:
-                user_queryset = countdown.cry_reaction.filter(pk=request.user.pk)
-
-                if len(user_queryset) > 0:
-                    countdown.cry_reaction.remove(request.user)
-
-                else:
-                    countdown.cry_reaction.add(request.user)
+                reaction_set_obj.cry = not reaction_set_obj.cry
+                if reaction_set_obj.cry:
+                    reaction_set_obj.laugh = False
 
             if reaction_id == self.reaction_id_dict['laugh']:
-                user_queryset = countdown.laugh_reaction.filter(pk=request.user.pk)
-
-                if len(user_queryset) > 0:
-                    countdown.laugh_reaction.remove(request.user)
-
-                else:
-                    countdown.laugh_reaction.add(request.user)
+                reaction_set_obj.laugh = not reaction_set_obj.laugh
+                if reaction_set_obj.laugh:
+                    reaction_set_obj.cry = False
 
             if reaction_id == self.reaction_id_dict['like']:
-                user_queryset = countdown.like_reaction.filter(pk=request.user.pk)
+                reaction_set_obj.like = not reaction_set_obj.like
+                if reaction_set_obj.like:
+                    reaction_set_obj.dislike = False
 
-                if len(user_queryset) > 0:
-                    countdown.like_reaction.remove(request.user)
+            if reaction_id == self.reaction_id_dict['dislike']:
+                reaction_set_obj.dislike = not reaction_set_obj.dislike
+                if reaction_set_obj.dislike:
+                    reaction_set_obj.like = False
 
-                else:
-                    countdown.like_reaction.add(request.user)
+            reaction_set_obj.save()
 
-            if reaction_id == self.reaction_id_dict['negative']:
-                user_queryset = countdown.negative_reaction.filter(pk=request.user.pk)
+            likes_number = countdown.reactionset_set.filter(like=True).count()
+            dislikes_number = countdown.reactionset_set.filter(dislike=True).count()
+            laugh_number = countdown.reactionset_set.filter(laugh=True).count()
+            cry_number = countdown.reactionset_set.filter(cry=True).count()
 
-                if len(user_queryset) > 0:
-                    countdown.negative_reaction.remove(request.user)
-
-                else:
-                    countdown.negative_reaction.add(request.user)
-
-            likes_number = len(countdown.like_reaction.all())
-            negative_number = len(countdown.negative_reaction.all())
-            laugh_number = len(countdown.laugh_reaction.all())
-            cry_number = len(countdown.cry_reaction.all())
-
-            return HttpResponse(f'{{ "laugh": {laugh_number}, "cry": {cry_number}, "like": {likes_number}, "negative": {negative_number} }}')
+            buttons_state = f', "like_state": {"true" if reaction_set_obj.like else "false"}, "dislike_state": {"true" if reaction_set_obj.dislike else "false"}, "laugh_state": {"true" if reaction_set_obj.laugh else "false"}, "cry_state": {"true" if reaction_set_obj.cry else "false"}}}'
+            reaction_numbers = f'{{ "laugh": {laugh_number}, "cry": {cry_number}, "like": {likes_number}, "negative": {dislikes_number}'
+            return HttpResponse(reaction_numbers + buttons_state)
         else:
             return HttpResponseForbidden()
 
