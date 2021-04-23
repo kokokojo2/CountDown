@@ -45,6 +45,11 @@ class CountdownDetailView(DetailView):
                 reaction_set_obj = None
             context['reaction_set'] = reaction_set_obj
 
+            if len(self.request.user.bookmarked_countdowns.filter(pk=self.object.pk)) > 0:
+                context['bookmarked'] = False
+            else:
+                context['bookmarked'] = True
+
         context.update(get_reaction_counters_dict(self.object))
         return context
 
