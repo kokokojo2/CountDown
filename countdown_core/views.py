@@ -10,7 +10,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 
 from .models import Countdown, ReactionSet
 from .forms import CountdownForm
-from .services.countdown_management import create_countdown
+from .services.countdown_management import create_countdown, get_reaction_counters_dict
 from custom_user.views import LoginRequiredView
 
 
@@ -38,25 +38,14 @@ class CountdownDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # TODO: move to a service (use it in js view as well)
         if self.request.user.is_authenticated:
             try:
                 reaction_set_obj = ReactionSet.objects.get(user=self.request.user, countdown=self.object)
             except ReactionSet.DoesNotExist:
                 reaction_set_obj = None
-
             context['reaction_set'] = reaction_set_obj
 
-        likes_number = self.object.reactionset_set.filter(like=True).count()
-        dislikes_number = self.object.reactionset_set.filter(dislike=True).count()
-        laugh_number = self.object.reactionset_set.filter(laugh=True).count()
-        cry_number = self.object.reactionset_set.filter(cry=True).count()
-
-        context['likes_number'] = likes_number
-        context['dislikes_number'] = dislikes_number
-        context['laugh_number'] = laugh_number
-        context['cry_number'] = cry_number
-
+        context.update(get_reaction_counters_dict(self.object))
         return context
 
 
@@ -101,7 +90,9 @@ class CountdownFinishedServiceView(View):
 
 
 class ReactionServiceView(View):
-
+    """
+    This view is used for AJAX calls to save a new reaction from user and fetch current reaction data.
+    """
     reaction_id_dict = {'cry': 0, 'laugh': 1, 'like': 2, 'dislike': 3}
 
     def get(self, request, pk, reaction_id):
@@ -132,13 +123,10 @@ class ReactionServiceView(View):
 
             reaction_set_obj.save()
 
-            likes_number = countdown.reactionset_set.filter(like=True).count()
-            dislikes_number = countdown.reactionset_set.filter(dislike=True).count()
-            laugh_number = countdown.reactionset_set.filter(laugh=True).count()
-            cry_number = countdown.reactionset_set.filter(cry=True).count()
+            counters = get_reaction_counters_dict(countdown)
 
             buttons_state = f', "like_state": {"true" if reaction_set_obj.like else "false"}, "dislike_state": {"true" if reaction_set_obj.dislike else "false"}, "laugh_state": {"true" if reaction_set_obj.laugh else "false"}, "cry_state": {"true" if reaction_set_obj.cry else "false"}}}'
-            reaction_numbers = f'{{ "laugh": {laugh_number}, "cry": {cry_number}, "like": {likes_number}, "negative": {dislikes_number}'
+            reaction_numbers = f'{{ "laugh": {counters["laugh_number"]}, "cry": {counters["cry_number"]}, "like": {counters["likes_number"]}, "negative": {counters["dislikes_number"]}'
             return HttpResponse(reaction_numbers + buttons_state)
         else:
             return HttpResponseForbidden()
