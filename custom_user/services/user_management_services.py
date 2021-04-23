@@ -45,7 +45,6 @@ def confirm_user_email(uidb64, token):
         user = CustomUser.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
-        # TODO: add a logging here
 
     if user is not None and token_generator.check_token(user, token):
         user.is_active = True
