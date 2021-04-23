@@ -1,5 +1,8 @@
 {% extends "generic/base.html" %}
 {% load static %}
+{% block head %}
+    <title>{{ countdown.name }}</title>
+{% endblock %}
 {% block main %}
     <div class="container">
         <div class="row text-center justify-content-center" id="wrapper">
