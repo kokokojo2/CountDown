@@ -65,8 +65,7 @@ class DashBoardView(ListView, LoginRequiredView):
     template_name = 'countdown/dashboard.html'
 
     def get_queryset(self):
-        queryset = super(DashBoardView, self).get_queryset()
-        return queryset.filter(user=self.request.user)
+        return super(DashBoardView, self).get_queryset().filter(user=self.request.user).order_by('-created')
 
 
 class CountdownUpdateView(UpdateView, LoginRequiredView, UserPassesTestMixin):
