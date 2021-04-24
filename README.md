@@ -29,4 +29,4 @@ Run developement server:
 ```bash
 python manage.py runserver
 ```
-After following these steps, open [this](http://127.0.0.1:8000/) url in your browser to check out this application.
+After following these steps, open [this](http://127.0.0.1:8000/) url in your browser to check out the work of application.
