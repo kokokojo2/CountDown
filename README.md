@@ -1,7 +1,7 @@
 # Countdown App
 Hi, I`m a student learning backend web developement and this is my first python django project.
 ## About
-This is a simple app that allows you to create countdowns to watch how your favorite events are coming. You can create a countdown for any time in future, specify description, text that will be visible when countdown finishes and share the link with friends. Also, authenticated users can bookmark countdowns and press buttons with emoji to show their reactions.
+This is a simple app that allows you to create countdowns to watch how your favorite events are coming. You can create a countdown for any time in future, specify description, text that will be visible when countdown finishes and share the link with friends. Also, authenticated users can bookmark countdowns and press buttons with emoji to show their reaction.
 ## Work example
 ![](https://i.imgur.com/HFOdCLY.gif)
 
